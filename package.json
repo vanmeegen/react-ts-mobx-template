@@ -2,7 +2,7 @@
   "name": "react-ts-mobx-template",
   "version": "0.1.0",
   "private": true,
-  "main": "src/index.tsx",
+  "main": "./index.tsx",
   "dependencies": {
     "autobind-decorator": "^2.4.0",
     "mobx": "^5.8.0",

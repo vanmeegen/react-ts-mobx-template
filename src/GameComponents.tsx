@@ -1,7 +1,6 @@
 import * as React from "react";
-import {Direction, Field, Model} from "./Model";
-import {observer} from "mobx-react";
-import Timer = NodeJS.Timer;
+import { Direction, Field, Model } from "./Model";
+import { observer } from "mobx-react";
 import autobind from "autobind-decorator";
 
 interface IFieldProps {
@@ -69,7 +68,7 @@ interface ILocalProps {
 
 @observer
 export class GameComponent extends React.Component<ILocalProps> {
-  private timeout: Timer;
+  private animationFrameHandle: number;
   private mainDiv: HTMLDivElement | null;
 
   constructor(props: ILocalProps) {
@@ -85,12 +84,14 @@ export class GameComponent extends React.Component<ILocalProps> {
       this.mainDiv.focus();
     }
     const that = this;
-    this.timeout = setInterval(() => {
+    const update = () => {
       const finished = that.props.model.move();
       if (finished) {
-        clearTimeout(that.timeout);
+        cancelAnimationFrame(that.animationFrameHandle);
       }
-    }, 100);
+      this.animationFrameHandle = requestAnimationFrame(update);
+    };
+    this.animationFrameHandle = requestAnimationFrame(update);
   }
 
   public render(): JSX.Element {
@@ -98,7 +99,7 @@ export class GameComponent extends React.Component<ILocalProps> {
     const width = this.props.model.width;
     this.props.model.board.forEach((f, idx) => {
       result.push(
-        <FieldComponent key={"F"+idx}
+        <FieldComponent key={"F" + idx}
           fieldContent={f}
           x={idx % width}
           y={Math.floor(idx / width)}
